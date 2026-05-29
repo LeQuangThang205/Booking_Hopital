@@ -2,6 +2,7 @@ package com.example.webapp.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -202,19 +203,16 @@ public class EmailService {
 
     private String buildRegistrationEmailBody(String customerName) {
         String displayName = customerName != null && !customerName.trim().isEmpty() ? customerName : "khách hàng";
-
-        return "Xin chào " + displayName + ",\n\n" +
-                "Chúc mừng bạn đã đăng ký tài khoản thành công trên hệ thống đặt lịch khám bệnh trực tuyến của TT Care+.\n\n"
-                +
-                "Từ bây giờ, bạn có thể:\n" +
-                "- Đăng nhập để quản lý thông tin cá nhân.\n" +
-                "- Đặt lịch khám bệnh nhanh chóng và thuận tiện.\n" +
-                "- Theo dõi lịch sử khám và kết quả xét nghiệm.\n\n" +
-                "Nếu bạn có bất kỳ thắc mắc nào, vui lòng liên hệ với chúng tôi qua số điện thoại: 0985081624 hoặc email: support@ttcare.vn.\n\n"
-                +
-                "Cảm ơn bạn đã tin tưởng và lựa chọn dịch vụ của chúng tôi.\n\n" +
-                "Trân trọng,\n" +
-                "TT Care+";
+        return "Kính gửi " + displayName + ",\n\n"
+                + "Quý khách đã đăng ký tài khoản thành công trên hệ thống đặt lịch trực tuyến của " + clinicName
+                + ".\n\n"
+                + "Từ nay, Quý khách có thể:\n"
+                + "- Đăng nhập và quản lý thông tin cá nhân.\n"
+                + "- Đặt lịch khám nhanh chóng và thuận tiện.\n"
+                + "- Theo dõi lịch sử khám và hồ sơ y tế.\n\n"
+                + "Nếu Quý khách cần hỗ trợ, vui lòng liên hệ: " + clinicPhone + " hoặc email " + clinicEmail + ".\n\n"
+                + "Trân trọng,\n"
+                + clinicSignature + "\n" + clinicName;
     }
 
     private String buildAppointmentConfirmedEmailBody(
@@ -223,39 +221,43 @@ public class EmailService {
             String roomName,
             LocalDate appointmentDate,
             LocalTime appointmentTime) {
-        String displayCustomer = customerName != null && !customerName.trim().isEmpty() ? customerName : "Quy khach";
-        String displayDoctor = doctorName != null && !doctorName.trim().isEmpty() ? doctorName : "Bac si";
+        String displayCustomer = customerName != null && !customerName.trim().isEmpty() ? customerName : "Quý khách";
+        String displayDoctor = doctorName != null && !doctorName.trim().isEmpty() ? doctorName : "Bác sĩ";
         String displayClinicName = roomName != null && !roomName.trim().isEmpty() ? roomName : clinicName;
-        String displayDate = appointmentDate != null ? appointmentDate.toString() : "(chua cap nhat)";
-        String displayTime = appointmentTime != null ? appointmentTime.toString() : "(chua cap nhat)";
+        DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm");
+        String displayDate = appointmentDate != null ? appointmentDate.format(dateFmt) : "(chưa cập nhật)";
+        String displayTime = appointmentTime != null ? appointmentTime.format(timeFmt) : "(chưa cập nhật)";
 
-        return "Kinh gui " + displayCustomer + ",\n\n"
-                + "Phong kham " + displayClinicName + " xin xac nhan lich hen cua quy khach:\n\n"
-                + "Thoi gian: " + displayDate + ", " + displayTime + "\n\n"
-                + "Bac si phu trach: " + displayDoctor + "\n\n"
-                + "Dia diem: " + clinicAddress + "\n\n"
-                + "Quy khach vui long den truoc 10 phut de hoan tat thu tuc. Neu co thay doi, xin lien he qua so "
-                + clinicPhone + ".\n\n"
-                + "Tran trong,\n"
-                + clinicSignature;
+        return "Kính gửi " + displayCustomer + ",\n\n"
+                + "Phòng khám " + clinicName + " trân trọng thông báo lịch hẹn của Quý khách đã được xác nhận.\n\n"
+                + "Thông tin chi tiết như sau:\n"
+                + "- Thời gian: " + displayDate + " lúc " + displayTime + "\n"
+                + "- Bác sĩ phụ trách: " + displayDoctor + "\n"
+                + "- Phòng/Đơn vị: " + displayClinicName + "\n"
+                + "- Địa điểm: " + clinicAddress + "\n\n"
+                + "Quý khách vui lòng có mặt trước ít nhất 10 phút để hoàn tất thủ tục hành chính."
+                + " Nếu cần thay đổi hoặc hủy lịch, xin liên hệ số " + clinicPhone + " hoặc trả lời email này.\n\n"
+                + "Trân trọng,\n"
+                + clinicSignature + "\n" + clinicName;
     }
 
     private String buildAppointmentCompletedEmailBody(
             String customerName,
             String doctorName,
             LocalDate appointmentDate) {
-        String displayCustomer = customerName != null && !customerName.trim().isEmpty() ? customerName : "Quy khach";
-        String displayDate = appointmentDate != null ? appointmentDate.toString() : "(chua cap nhat)";
+        String displayCustomer = customerName != null && !customerName.trim().isEmpty() ? customerName : "Quý khách";
+        DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String displayDate = appointmentDate != null ? appointmentDate.format(dateFmt) : "(chưa cập nhật)";
 
-        return "Kinh gui " + displayCustomer + ",\n\n"
-                + "Phong kham " + clinicName
-                + " chan thanh cam on quy khach da tin tuong va su dung dich vu cua chung toi ngay "
-                + displayDate + ".\n\n"
-                + "Chung toi hy vong quy khach hai long voi trai nghiem va ket qua tham kham. Neu co bat ky thac mac hoac can ho tro them, xin vui long lien he qua so "
-                + clinicPhone + " hoac email " + clinicEmail + ".\n\n"
-                + "Chuc quy khach suc khoe va hen gap lai.\n\n"
-                + "Tran trong,\n"
-                + clinicSignature;
+        return "Kính gửi " + displayCustomer + ",\n\n"
+                + "Phòng khám " + clinicName + " xin chân thành cảm ơn Quý khách đã đến khám ngày " + displayDate
+                + ".\n\n"
+                + "Chúng tôi hy vọng Quý khách hài lòng với chất lượng dịch vụ. Nếu cần hỗ trợ thêm, xin vui lòng liên hệ: "
+                + clinicPhone + " hoặc email " + clinicEmail + ".\n\n"
+                + "Kính chúc Quý khách sức khỏe.\n\n"
+                + "Trân trọng,\n"
+                + clinicSignature + "\n" + clinicName;
     }
 
     private String buildAppointmentMissedEmailBody(
@@ -263,18 +265,19 @@ public class EmailService {
             String doctorName,
             LocalDate appointmentDate,
             LocalTime appointmentTime) {
-        String displayCustomer = customerName != null && !customerName.trim().isEmpty() ? customerName : "khách hàng";
-        String displayDoctor = doctorName != null && !doctorName.trim().isEmpty() ? doctorName : "bác sĩ";
-        String displayDate = appointmentDate != null ? appointmentDate.toString() : "(chưa cập nhật)";
-        String displayTime = appointmentTime != null ? appointmentTime.toString() : "(chưa cập nhật)";
+        String displayCustomer = customerName != null && !customerName.trim().isEmpty() ? customerName : "Quý khách";
+        String displayDoctor = doctorName != null && !doctorName.trim().isEmpty() ? doctorName : "Bác sĩ";
+        DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm");
+        String displayDate = appointmentDate != null ? appointmentDate.format(dateFmt) : "(chưa cập nhật)";
+        String displayTime = appointmentTime != null ? appointmentTime.format(timeFmt) : "(chưa cập nhật)";
 
-        return "Xin chào " + displayCustomer + ",\n\n"
-                + "Chúng tôi rất tiếc vì bạn đã bỏ lỡ lịch hẹn với " + displayDoctor + " vào " + displayDate + " lúc "
-                + displayTime + ".\n"
-                + "TT Care+ thành thật xin lỗi nếu có bất kỳ bất tiện nào và luôn sẵn sàng hỗ trợ bạn đặt lại lịch.\n"
-                + "Vui lòng đăng nhập hệ thống để chọn khung giờ phù hợp hơn.\n\n"
+        return "Kính gửi " + displayCustomer + ",\n\n"
+                + "Chúng tôi rất tiếc thông báo Quý khách đã bỏ lỡ lịch hẹn với " + displayDoctor + " vào ngày "
+                + displayDate + " lúc " + displayTime + ".\n"
+                + "Nếu Quý khách cần, chúng tôi sẵn sàng hỗ trợ đặt lại lịch phù hợp. Vui lòng truy cập hệ thống hoặc liên hệ phòng khám để được hỗ trợ.\n\n"
                 + "Trân trọng,\n"
-                + "TT Care+";
+                + clinicSignature + "\n" + clinicName;
     }
 
     private String buildAppointmentCancelledEmailBody(
@@ -282,15 +285,18 @@ public class EmailService {
             String doctorName,
             LocalDate appointmentDate,
             LocalTime appointmentTime) {
-        String displayCustomer = customerName != null && !customerName.trim().isEmpty() ? customerName : "khách hàng";
-        String displayDoctor = doctorName != null && !doctorName.trim().isEmpty() ? doctorName : "bác sĩ";
-        String displayDate = appointmentDate != null ? appointmentDate.toString() : "(chưa cập nhật)";
-        String displayTime = appointmentTime != null ? appointmentTime.toString() : "(chưa cập nhật)";
+        String displayCustomer = customerName != null && !customerName.trim().isEmpty() ? customerName : "Quý khách";
+        String displayDoctor = doctorName != null && !doctorName.trim().isEmpty() ? doctorName : "Bác sĩ";
+        DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm");
+        String displayDate = appointmentDate != null ? appointmentDate.format(dateFmt) : "(chưa cập nhật)";
+        String displayTime = appointmentTime != null ? appointmentTime.format(timeFmt) : "(chưa cập nhật)";
 
-        return "Xin chào " + displayCustomer + ",\n\n"
-                + "Lịch hẹn với " + displayDoctor + " vào " + displayDate + " lúc " + displayTime + " đã được hủy.\n"
-                + "Nếu bạn cần đặt lại lịch, vui lòng đăng nhập hệ thống hoặc liên hệ bộ phận hỗ trợ để được hướng dẫn.\n\n"
+        return "Kính gửi " + displayCustomer + ",\n\n"
+                + "Lịch hẹn với " + displayDoctor + " vào ngày " + displayDate + " lúc " + displayTime
+                + " đã được hủy.\n"
+                + "Nếu Quý khách cần hỗ trợ đặt lại lịch, xin vui lòng đăng nhập vào hệ thống hoặc liên hệ trực tiếp với phòng khám để được hướng dẫn.\n\n"
                 + "Trân trọng,\n"
-                + "TT Care+";
+                + clinicSignature + "\n" + clinicName;
     }
 }

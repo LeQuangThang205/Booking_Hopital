@@ -74,6 +74,7 @@ public class XacThucController {
             res.put("success", true);
             res.put("user", userOpt.get().getUsername());
             res.put("role", userOpt.get().getRole());
+            res.put("id", userOpt.get().getId());
         } else {
             res.put("success", false);
             res.put("message", "Invalid username or password");
@@ -113,6 +114,7 @@ public class XacThucController {
 
         NguoiDung user = userOpt.get();
         res.put("success", true);
+        res.put("id", user.getId());
         res.put("user", user.getUsername());
         res.put("role", userService.normalizeRole(user.getRole()));
         return res;

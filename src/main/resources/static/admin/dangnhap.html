@@ -110,6 +110,7 @@
                         if (!res.success) { uiAlert(res.message || 'Đăng nhập thất bại', 'Thông báo'); return; }
                         var role = normalizeRole(res.role);
                         var sessionUser = {
+                            id: res.id || null,
                             name: res.user || email,
                             email: email,
                             username: res.user || email,

@@ -12,17 +12,64 @@ function normalizeRole(role) {
     return v;
 }
 
-function apiJson(url, options) {
+// Global loader helpers
+function ensureGlobalLoader() {
+    if (typeof document === 'undefined') return null;
+    var existing = document.getElementById('global-loader');
+    if (existing) return existing;
+    var root = document.createElement('div');
+    root.id = 'global-loader';
+    root.className = 'global-loader';
+    root.innerHTML = '<div class="loader-box"><div class="spinner" aria-hidden="true"></div><div class="loader-label">Đang xử lý...</div></div>';
+    document.body.appendChild(root);
+    return root;
+}
+
+function showGlobalLoader(message) {
+    var root = ensureGlobalLoader();
+    if (!root) return;
+    try {
+        var label = root.querySelector('.loader-label');
+        if (label && message) label.textContent = message;
+    } catch (e) {}
+    root.classList.add('is-visible');
+}
+
+function hideGlobalLoader() {
+    var root = typeof document !== 'undefined' ? document.getElementById('global-loader') : null;
+    if (!root) return;
+    root.classList.remove('is-visible');
+}
+
+function navigateWithLoading(url) {
+    showGlobalLoader();
+    window.location.href = url;
+}
+
+function clearSessionData() {
+    try { localStorage.removeItem(STORAGE_KEY); } catch(e){}
+    try { localStorage.removeItem('doctor_portal_doctorId'); } catch(e){}
+    try { localStorage.removeItem(PROFILE_REQUIRED_KEY); } catch(e){}
+}
+
+async function apiJson(url, options) {
     var opts = options || {};
-    return fetch(url, opts).then(function (res) {
-        return res.json().then(function (data) {
-            if (!res.ok) {
-                var msg = data && data.message ? data.message : "Yeu cau that bai";
-                throw new Error(msg);
-            }
-            return data;
-        });
-    });
+    showGlobalLoader();
+    try {
+        var res = await fetch(url, opts);
+        var data = null;
+        try { data = await res.json(); } catch (e) { data = null; }
+        if (!res.ok) {
+            var msg = (data && (data.message || data.error)) ? (data.message || data.error) : 'Yêu cầu thất bại';
+            var err = new Error(msg);
+            err.response = res;
+            err.data = data;
+            throw err;
+        }
+        return data;
+    } finally {
+        hideGlobalLoader();
+    }
 }
 
 function getCurrentUser() {

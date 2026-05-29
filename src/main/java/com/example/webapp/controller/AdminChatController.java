@@ -79,6 +79,9 @@ public class AdminChatController {
             @RequestBody Map<String, Long> body) {
 
         Long adminId = body.get("adminId");
+        if (adminId == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Thiếu adminId, vui lòng đăng nhập lại"));
+        }
 
         ChatConversation conversation = conversationRepository.findByConversationId(conversationId)
                 .orElse(null);
