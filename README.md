@@ -1,4 +1,4 @@
-# PHÒNG KHÁM PHENIKAAMEC — Hệ thống đặt lịch khám (Java + Spring Boot)
+#  — Hệ thống hỗ trợ đặt lịch khám (Java + Spring Boot)
 
 Ứng dụng web nội bộ cho đặt lịch khám, quản lý bệnh nhân, quản trị viên và bác sĩ.
 Phiên bản hiện tại: Java 17, Spring Boot 3.2.0.
