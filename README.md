@@ -1,4 +1,4 @@
-#  — Hệ thống hỗ trợ đặt lịch khám (Java + Spring Boot)
+# TT Care+ — Hệ thống đặt lịch khám (Java + Spring Boot)
 
 Ứng dụng web nội bộ cho đặt lịch khám, quản lý bệnh nhân, quản trị viên và bác sĩ.
 Phiên bản hiện tại: Java 17, Spring Boot 3.2.0.
@@ -22,7 +22,7 @@ Hệ thống phục vụ 3 vai trò chính: `CUSTOMER` (bệnh nhân), `DOCTOR` 
 
 Tính năng căn bản: đăng ký/đăng nhập, phân quyền theo vai trò, đặt lịch, quản lý bác sĩ/chuyên khoa, dashboard quản trị, báo cáo thống kê.
 
-Giao diện là các trang HTML tĩnh, đã được chỉnh sửa để khắc phục lỗi mã hóa (chuẩn hoá UTF-8) và thống nhất thương hiệu `PHÒNG KHÁM PHENIKAAMEC`. Logo mặc định: `/images/logo.png`.
+Giao diện là các trang HTML tĩnh, đã được chỉnh sửa để khắc phục lỗi mã hóa (chuẩn hoá UTF-8) và thống nhất thương hiệu `TT CARE+`. Logo mặc định: `/images/logo.png`.
 
 ---
 
@@ -32,7 +32,7 @@ Giao diện là các trang HTML tĩnh, đã được chỉnh sửa để khắc 
 - Di chuyển trang đăng nhập/đăng ký vào thư mục quản trị: `src/main/resources/static/admin/` (`/admin/dangnhap.html`, `/admin/dangky.html`).
 - Frontend xác thực được tích hợp với API backend: `POST /api/auth/login` và `POST /api/auth/register`.
 - File client auth chính: `src/main/resources/static/js/xacthuc.js` (chứa `authLogin()`, `authRegister()`, `setCurrentUser()`, `redirectByRole()`, `requireAuth()`).
-- Thương hiệu đã đổi tên hiển thị trên các trang tĩnh sang **PHÒNG KHÁM PHENIKAAMEC**; logo đặt tại `/images/logo.png`.
+- Thương hiệu đã thống nhất sang **TT Care+** trên các trang tĩnh; logo đặt tại `/images/logo.png`.
 
 Các mục công việc còn lại: chạy toàn bộ kiểm thử luồng đăng nhập/đăng ký với DB, seed dữ liệu test (user/admin/bác sĩ), kiểm tra chạy ổn định (port 8080).
 
@@ -175,7 +175,7 @@ spring.mail.properties.mail.smtp.starttls.enable=true
 2. Chuẩn bị DB (ví dụ nhanh):
 
 ```sql
-CREATE DATABASE phenikaamec_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE tt_care_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
 3. Cấu hình `src/main/resources/application.properties` với thông tin DB và port.
